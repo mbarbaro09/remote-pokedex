@@ -1,8 +1,10 @@
+using remote_pokedex.Infrastructure.Endpoints;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddEndpoints();
 
 var app = builder.Build();
 
@@ -12,6 +14,6 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.MapControllers();
+app.MapEndpoints();
 
 app.Run();

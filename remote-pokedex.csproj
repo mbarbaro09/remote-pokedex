@@ -10,4 +10,8 @@
     <DockerfileContext>.</DockerfileContext>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Pokemons\" />
+  </ItemGroup>
+
 </Project>
