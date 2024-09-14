@@ -1,4 +1,5 @@
-﻿using remote_pokedex.Pokemons;
+﻿using remote_pokedex.Pokemons.Endpoints.Responses;
+using remote_pokedex.Pokemons.Services.DTOs;
 
 namespace remote_pokedex.Extensions;
 

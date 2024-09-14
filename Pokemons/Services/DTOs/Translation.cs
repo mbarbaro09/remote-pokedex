@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace remote_pokedex.Pokemons;
+namespace remote_pokedex.Pokemons.Services.DTOs;
 
 public record Contents(
     [property: JsonPropertyName("translated")] string translated,

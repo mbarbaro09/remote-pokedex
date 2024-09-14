@@ -2,8 +2,11 @@
 using remote_pokedex.Extensions;
 using remote_pokedex.Infrastructure.Endpoints;
 using remote_pokedex.Infrastructure.Exceptions;
+using remote_pokedex.Pokemons.Endpoints.Responses;
+using remote_pokedex.Pokemons.Services;
+using remote_pokedex.Pokemons.Services.DTOs;
 
-namespace remote_pokedex.Pokemons;
+namespace remote_pokedex.Pokemons.Endpoints;
 
 public static class GetPokemon
 {
@@ -27,7 +30,7 @@ public static class GetPokemon
         {
             specie = await pokeAPIRepository.GetPokemonSpecie(name);
         }
-        catch (HttpClientException ex) 
+        catch (HttpClientException ex)
         {
             return TypedResults.NotFound("The pokemon could not be found, Try again later.");
         }
