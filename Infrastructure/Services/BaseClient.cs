@@ -36,10 +36,9 @@ namespace remote_pokedex.Infrastructure.Services
 
             if (routeParams is not null && routeParams.Any())
             {
-                url += "?"; 
-                url += routeParams
-                    .Select(p => Uri.EscapeDataString(p.Item1 + "=" + p.Item2))
-                    .Aggregate(string.Empty, (curr, next) => curr + "&" + next);
+                url += "?";
+                url += string.Join('&', routeParams
+                    .Select(p => p.Item1 + "=" + Uri.EscapeDataString(p.Item2.Replace("\n", " "))));
             }
 
             try

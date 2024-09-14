@@ -25,12 +25,11 @@ public static class GetPokemon
             return TypedResults.BadRequest("The request was not formatted correctly! Pokemon name is missing or empty.");
 
         PokemonSpecie specie;
-
         try
         {
             specie = await pokeAPIRepository.GetPokemonSpecie(name);
         }
-        catch (HttpClientException ex)
+        catch (HttpClientException)
         {
             return TypedResults.NotFound("The pokemon could not be found, Try again later.");
         }
