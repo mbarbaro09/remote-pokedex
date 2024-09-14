@@ -1,5 +1,4 @@
 ﻿using remote_pokedex.Pokemons;
-using remote_pokedex.Repositories.DTO;
 
 namespace remote_pokedex.Extensions;
 

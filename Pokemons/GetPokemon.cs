@@ -2,8 +2,6 @@
 using remote_pokedex.Extensions;
 using remote_pokedex.Infrastructure.Endpoints;
 using remote_pokedex.Infrastructure.Exceptions;
-using remote_pokedex.Repositories;
-using remote_pokedex.Repositories.DTO;
 
 namespace remote_pokedex.Pokemons;
 

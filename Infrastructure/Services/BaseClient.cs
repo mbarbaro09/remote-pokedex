@@ -1,14 +1,14 @@
 ﻿using remote_pokedex.Infrastructure.Exceptions;
 using System.Text.Json;
 
-namespace remote_pokedex.Repositories
+namespace remote_pokedex.Infrastructure.Services
 {
     public abstract class BaseClient(string baseUrl) : IDisposable
     {
         private HttpClient _httpClient = new HttpClient();
         private string _baseUrl = baseUrl;
 
-        public async Task<T> GetAsync<T>(string resourceUrl) where T : class 
+        public async Task<T> GetAsync<T>(string resourceUrl) where T : class
         {
             string url = _baseUrl + "/" + resourceUrl;
             HttpResponseMessage? response;
@@ -16,13 +16,13 @@ namespace remote_pokedex.Repositories
             try
             {
                 response = await _httpClient.GetAsync(url);
-            } 
-            catch (Exception ex) 
+            }
+            catch (Exception ex)
             {
                 throw new HttpClientException($"Missing response from calling: {url}", ex);
             }
 
-            if (response is null || !response.IsSuccessStatusCode) 
+            if (response is null || !response.IsSuccessStatusCode)
             {
                 string content = JsonSerializer.Serialize(response?.Content);
                 throw new HttpClientException($"Response was empty or not successful: {response?.StatusCode}, {content}");
@@ -34,7 +34,7 @@ namespace remote_pokedex.Repositories
                 var stream = await response.Content?.ReadAsStreamAsync() ?? Stream.Null;
                 resource = await JsonSerializer.DeserializeAsync<T>(stream);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 throw new HttpClientException($"It was not possible to deserialize response to {nameof(T)}. Response: {response.Content?.ToString() ?? ""}", ex);
             }

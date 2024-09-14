@@ -1,5 +1,5 @@
 using remote_pokedex.Infrastructure.Endpoints;
-using remote_pokedex.Repositories;
+using remote_pokedex.Pokemons;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
-using remote_pokedex.Repositories.DTO;
+using remote_pokedex.Infrastructure.Services;
 using System.Text.Json;
 
-namespace remote_pokedex.Repositories;
+namespace remote_pokedex.Pokemons;
 
 public interface IPokeAPIRepository
 {

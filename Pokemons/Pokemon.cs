@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace remote_pokedex.Repositories.DTO;
+namespace remote_pokedex.Pokemons;
 
 public record Area(
     [property: JsonPropertyName("name")] string name,
