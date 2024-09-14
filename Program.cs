@@ -5,6 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddScoped<IPokeAPIRepository, PokeAPIRepository>((provider) => new PokeAPIRepository(builder.Configuration.GetSection("ServicesURL").GetValue<string>("PokeAPI")));
+builder.Services.AddScoped<IFunTranslationsService, FunTranslationsService>((provider) => new FunTranslationsService(builder.Configuration.GetSection("ServicesURL").GetValue<string>("FunTranslations")));
 
 // Add services to the container.
 builder.Services.AddEndpoints();

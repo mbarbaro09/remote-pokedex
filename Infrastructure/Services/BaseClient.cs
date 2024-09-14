@@ -8,9 +8,9 @@ namespace remote_pokedex.Infrastructure.Services
         private HttpClient _httpClient = new HttpClient();
         private string _baseUrl = baseUrl;
 
-        public async Task<T> GetAsync<T>(string resourceUrl) where T : class
+        public async Task<T> GetAsync<T>(string route) where T : class
         {
-            string url = _baseUrl + "/" + resourceUrl;
+            string url = _baseUrl + "/" + route;
             HttpResponseMessage? response;
 
             try
@@ -22,6 +22,41 @@ namespace remote_pokedex.Infrastructure.Services
                 throw new HttpClientException($"Missing response from calling: {url}", ex);
             }
 
+            return await HandleResponse<T>(response);
+        }
+
+        public async Task<T> PostAsync<T>(
+            string route, 
+            IEnumerable<(string, string)>? routeParams = null, 
+            object? body = null
+        ) where T : class 
+        {
+            string url = _baseUrl + "/" + route;
+            HttpResponseMessage? response;
+
+            if (routeParams is not null && routeParams.Any())
+            {
+                url += "?"; 
+                url += routeParams
+                    .Select(p => Uri.EscapeDataString(p.Item1 + "=" + p.Item2))
+                    .Aggregate(string.Empty, (curr, next) => curr + "&" + next);
+            }
+
+            try
+            {
+                response = await _httpClient.PostAsJsonAsync(url, JsonSerializer.Serialize(body));
+            }
+            catch (Exception ex)
+            {
+                throw new HttpClientException($"Missing response from calling: {url}", ex);
+            }
+
+            return await HandleResponse<T>(response);
+
+        }
+
+        private async Task<T> HandleResponse<T>(HttpResponseMessage response) where T : class
+        {
             if (response is null || !response.IsSuccessStatusCode)
             {
                 string content = JsonSerializer.Serialize(response?.Content);

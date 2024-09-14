@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using remote_pokedex.Infrastructure.Services;
-using System.Text.Json;
+﻿using remote_pokedex.Infrastructure.Services;
 
 namespace remote_pokedex.Pokemons;
 
@@ -13,7 +11,6 @@ public class PokeAPIRepository(string baseUrl) : BaseClient(baseUrl), IPokeAPIRe
 {
     public async Task<PokemonSpecie> GetPokemonSpecie(string name)
     {
-        var pokemon = await GetAsync<PokemonSpecie>($"pokemon-species/{name}");
-        return pokemon;
+        return await GetAsync<PokemonSpecie>($"pokemon-species/{name}");
     }
 }
