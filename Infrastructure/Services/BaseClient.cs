@@ -1,4 +1,5 @@
-﻿using remote_pokedex.Infrastructure.Exceptions;
+﻿using remote_pokedex.Infrastructure.Endpoints;
+using remote_pokedex.Infrastructure.Exceptions;
 using System.Text.Json;
 
 namespace remote_pokedex.Infrastructure.Services
@@ -10,7 +11,7 @@ namespace remote_pokedex.Infrastructure.Services
 
         public async Task<T> GetAsync<T>(string route) where T : class
         {
-            string url = _baseUrl + "/" + route;
+            string url = GetUrl(route);
             HttpResponseMessage? response;
 
             try
@@ -31,16 +32,9 @@ namespace remote_pokedex.Infrastructure.Services
             object? body = null
         ) where T : class 
         {
-            string url = _baseUrl + "/" + route;
+            string url = GetUrl(route, routeParams);
+
             HttpResponseMessage? response;
-
-            if (routeParams is not null && routeParams.Any())
-            {
-                url += "?";
-                url += string.Join('&', routeParams
-                    .Select(p => p.Item1 + "=" + Uri.EscapeDataString(p.Item2.Replace("\n", " "))));
-            }
-
             try
             {
                 response = await _httpClient.PostAsJsonAsync(url, JsonSerializer.Serialize(body));
@@ -51,7 +45,6 @@ namespace remote_pokedex.Infrastructure.Services
             }
 
             return await HandleResponse<T>(response);
-
         }
 
         private async Task<T> HandleResponse<T>(HttpResponseMessage response) where T : class
@@ -78,6 +71,20 @@ namespace remote_pokedex.Infrastructure.Services
             }
 
             return resource ?? throw new HttpClientException("Response was empty", HttpResponseErrorType.EMPTY);
+        }
+
+        private string GetUrl(string route, IEnumerable<(string, string)>? routeParams = null)
+        {
+            URIBuilder uri = new(_baseUrl);
+            uri.AddRoute(route);
+
+            if (routeParams is not null && routeParams.Any())
+            {
+                foreach (var routeParam in routeParams)
+                    uri.AddQueryParam(routeParam.Item1, routeParam.Item2);
+            }
+
+            return uri.Build();
         }
 
         public void Dispose() => _httpClient.Dispose();
