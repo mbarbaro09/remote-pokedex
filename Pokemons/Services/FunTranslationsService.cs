@@ -12,8 +12,8 @@ public interface IFunTranslationsService
 /// <summary>
 /// Client that calls the translation service via REST API
 /// </summary>
-/// <param name="baseUrl">base address of the service</param>
-public class FunTranslationsService(string baseUrl) : BaseClient(baseUrl), IFunTranslationsService
+public class FunTranslationsService(IConfiguration configuration, ILogger<FunTranslationsService> logger) 
+    : BaseClient(configuration.GetSection("ServicesURL").GetValue<string>("FunTranslations"), logger), IFunTranslationsService
 {
     public async Task<string> GetShakespeareTranslation(string text)
     {

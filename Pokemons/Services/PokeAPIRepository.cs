@@ -11,8 +11,8 @@ public interface IPokeAPIRepository
 /// <summary>
 /// Repository that retrieves pokemon information from the data source via REST API
 /// </summary>
-/// <param name="baseUrl">base address of the data source</param>
-public class PokeAPIRepository(string baseUrl) : BaseClient(baseUrl), IPokeAPIRepository
+public class PokeAPIRepository(IConfiguration configuration, ILogger<PokeAPIRepository> logger) 
+    : BaseClient(configuration.GetSection("ServicesURL").GetValue<string>("PokeAPI"), logger), IPokeAPIRepository
 {
     public async Task<PokemonSpecie> GetPokemonSpecie(string name)
     {

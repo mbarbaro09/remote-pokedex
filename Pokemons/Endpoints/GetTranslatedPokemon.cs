@@ -27,10 +27,14 @@ public static class GetTranslatedPokemon
     public static async Task<IResult> Handler(
         string name, 
         IPokeAPIRepository pokeAPIRepository, 
-        IFunTranslationsService translationsService
+        IFunTranslationsService translationsService,
+        ILogger<Endpoint> logger
     ) {
         if (string.IsNullOrWhiteSpace(name))
+        {
+            logger.LogError("Empty request was sent");
             return Results.BadRequest("The request was not formatted correctly! Pokemon name is missing or empty.");
+        }
 
         PokemonSpecie specie;
         try
@@ -39,6 +43,7 @@ public static class GetTranslatedPokemon
         }
         catch (HttpClientException ex)
         {
+            logger.LogError(ex, "Error occured during call for name: {0}", name);
             return ex.ErrorType switch
             {
                 HttpResponseErrorType.FAILED => Results.Problem(statusCode: StatusCodes.Status500InternalServerError, detail: "The request failed for an internal error. Try again later!"),

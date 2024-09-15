@@ -1,4 +1,5 @@
-﻿using remote_pokedex.Infrastructure.Endpoints;
+﻿using Microsoft.AspNetCore.Mvc;
+using remote_pokedex.Infrastructure.Endpoints;
 using remote_pokedex.Infrastructure.Exceptions;
 using remote_pokedex.Pokemons.Endpoints.Responses;
 using remote_pokedex.Pokemons.Extensions;
@@ -24,10 +25,16 @@ public static class GetPokemon
         }
     }
 
-    public static async Task<IResult> Handler(string name, IPokeAPIRepository pokeAPIRepository)
-    {
+    public static async Task<IResult> Handler(
+        string name, 
+        IPokeAPIRepository pokeAPIRepository, 
+        ILogger<Endpoint> logger
+    ) {
         if (string.IsNullOrWhiteSpace(name))
-            return  Results.BadRequest("The request was not formatted correctly! Pokemon name is missing or empty.");
+        {
+            logger.LogError("Empty request was sent");
+            return Results.BadRequest("The request was not formatted correctly! Pokemon name is missing or empty.");
+        }
 
         PokemonSpecie specie;
         try
@@ -36,6 +43,7 @@ public static class GetPokemon
         }
         catch (HttpClientException ex)
         {
+            logger.LogError(ex, "Error occured during call for name: {0}", name);
             return ex.ErrorType switch
             {
                 HttpResponseErrorType.FAILED => Results.Problem(statusCode: StatusCodes.Status500InternalServerError, detail: "The request failed for an internal error. Try again later!"),

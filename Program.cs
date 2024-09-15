@@ -2,10 +2,11 @@ using remote_pokedex.Infrastructure.Endpoints;
 using remote_pokedex.Pokemons.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
-
-builder.Services.AddScoped<IPokeAPIRepository, PokeAPIRepository>((provider) => new PokeAPIRepository(builder.Configuration.GetSection("ServicesURL").GetValue<string>("PokeAPI")));
-builder.Services.AddScoped<IFunTranslationsService, FunTranslationsService>((provider) => new FunTranslationsService(builder.Configuration.GetSection("ServicesURL").GetValue<string>("FunTranslations")));
+builder.Services.AddScoped<IPokeAPIRepository, PokeAPIRepository>();
+builder.Services.AddScoped<IFunTranslationsService, FunTranslationsService>();
 
 // Add services to the container.
 builder.Services.AddEndpoints();

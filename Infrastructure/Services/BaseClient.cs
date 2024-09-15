@@ -4,8 +4,9 @@ using System.Text.Json;
 
 namespace remote_pokedex.Infrastructure.Services
 {
-    public abstract class BaseClient(string baseUrl) : IDisposable
+    public abstract class BaseClient(string baseUrl, ILogger<BaseClient> logger) : IDisposable
     {
+        private readonly ILogger<BaseClient> logger = logger;
         private readonly HttpClient _httpClient = new();
         private readonly string _baseUrl = baseUrl;
 
@@ -16,11 +17,12 @@ namespace remote_pokedex.Infrastructure.Services
 
             try
             {
+                logger.LogDebug("[GET] Calling: {url}", url);
                 response = await _httpClient.GetAsync(url);
             }
             catch (Exception ex)
             {
-                throw new HttpClientException($"Missing response from calling: {url}", HttpResponseErrorType.FAILED, ex);
+                throw LogAndThrow($"Error while calling: {url}", HttpResponseErrorType.FAILED, ex);
             }
 
             return await HandleResponse<T>(response);
@@ -37,11 +39,12 @@ namespace remote_pokedex.Infrastructure.Services
             HttpResponseMessage? response;
             try
             {
+                logger.LogDebug("[POST] Calling: {url}", url);
                 response = await _httpClient.PostAsJsonAsync(url, JsonSerializer.Serialize(body));
             }
             catch (Exception ex)
             {
-                throw new HttpClientException($"Missing response from calling: {url}", HttpResponseErrorType.FAILED, ex);
+                throw LogAndThrow($"Error while calling: {url}", HttpResponseErrorType.FAILED, ex);
             }
 
             return await HandleResponse<T>(response);
@@ -50,15 +53,15 @@ namespace remote_pokedex.Infrastructure.Services
         private async Task<T> HandleResponse<T>(HttpResponseMessage response) where T : class
         {
             if (response is null || !response.IsSuccessStatusCode)
-                throw new HttpClientException($"Response was empty", HttpResponseErrorType.EMPTY);
+                throw LogAndThrow($"Response was empty", HttpResponseErrorType.EMPTY);
 
             if (!response.IsSuccessStatusCode)
-                throw new HttpClientException($"Response was not successful: {response?.StatusCode}", HttpResponseErrorType.FAILED);
+                throw LogAndThrow($"Response was not successful: {response?.StatusCode}", HttpResponseErrorType.FAILED);
 
             var stream = await response.Content.ReadAsStreamAsync();
-            
+
             if (stream.Length <= 0)
-                throw new HttpClientException($"Response body was empty and not deserializable into {nameof(T)}.", HttpResponseErrorType.EMPTY);
+                throw LogAndThrow($"Response body was empty and not deserializable into {nameof(T)}.", HttpResponseErrorType.EMPTY);
 
             T? resource = null;
             try
@@ -67,7 +70,7 @@ namespace remote_pokedex.Infrastructure.Services
             }
             catch (Exception ex) when (ex is JsonException or ArgumentNullException)
             {
-                throw new HttpClientException($"It was not possible to deserialize response to {nameof(T)}. Response: {response.Content?.ToString() ?? ""}", HttpResponseErrorType.FAILED, ex);
+                throw LogAndThrow($"Error while deserializing response to {nameof(T)}. Response: {response.Content?.ToString() ?? ""}", HttpResponseErrorType.FAILED, ex);
             }
 
             return resource ?? throw new HttpClientException("Response was empty", HttpResponseErrorType.EMPTY);
@@ -85,6 +88,12 @@ namespace remote_pokedex.Infrastructure.Services
             }
 
             return uri.Build();
+        }
+
+        private HttpClientException LogAndThrow(string error, HttpResponseErrorType type, Exception? ex = null)
+        {
+            logger.LogError(error);
+            return new HttpClientException(error, type, ex);
         }
 
         public void Dispose() => _httpClient.Dispose();
