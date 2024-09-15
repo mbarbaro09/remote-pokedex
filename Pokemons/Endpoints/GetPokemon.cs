@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using remote_pokedex.Extensions;
 using remote_pokedex.Infrastructure.Endpoints;
 using remote_pokedex.Infrastructure.Exceptions;
 using remote_pokedex.Pokemons.Endpoints.Responses;
+using remote_pokedex.Pokemons.Extensions;
 using remote_pokedex.Pokemons.Services;
 using remote_pokedex.Pokemons.Services.DTOs;
 
@@ -15,7 +15,8 @@ public static class GetPokemon
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
             app.MapGet("pokemon/{name}", Handler)
-               .WithTags("Pokemon");
+               .WithTags("Pokemon")
+               .WithDescription("Given a Pokemon name, returns standard Pokemon description and additional information.");
         }
     }
 

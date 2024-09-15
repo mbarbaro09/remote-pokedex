@@ -4,7 +4,7 @@ using remote_pokedex.Infrastructure.Exceptions;
 using remote_pokedex.Pokemons.Endpoints.Responses;
 using remote_pokedex.Pokemons.Services.DTOs;
 using remote_pokedex.Pokemons.Services;
-using remote_pokedex.Extensions;
+using remote_pokedex.Pokemons.Extensions;
 
 namespace remote_pokedex.Pokemons.Endpoints;
 
@@ -15,7 +15,8 @@ public static class GetTranslatedPokemon
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
             app.MapGet("pokemon/translated/{name}", Handler)
-               .WithTags("Pokemon");
+               .WithTags("Pokemon")
+               .WithDescription("Given a Pokemon name, return translated Pokemon description and other basic information");
         }
     }
 
