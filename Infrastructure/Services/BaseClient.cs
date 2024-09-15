@@ -5,8 +5,8 @@ namespace remote_pokedex.Infrastructure.Services
 {
     public abstract class BaseClient(string baseUrl) : IDisposable
     {
-        private HttpClient _httpClient = new HttpClient();
-        private string _baseUrl = baseUrl;
+        private readonly HttpClient _httpClient = new();
+        private readonly string _baseUrl = baseUrl;
 
         public async Task<T> GetAsync<T>(string route) where T : class
         {
@@ -19,7 +19,7 @@ namespace remote_pokedex.Infrastructure.Services
             }
             catch (Exception ex)
             {
-                throw new HttpClientException($"Missing response from calling: {url}", ex);
+                throw new HttpClientException($"Missing response from calling: {url}", HttpResponseErrorType.FAILED, ex);
             }
 
             return await HandleResponse<T>(response);
@@ -47,7 +47,7 @@ namespace remote_pokedex.Infrastructure.Services
             }
             catch (Exception ex)
             {
-                throw new HttpClientException($"Missing response from calling: {url}", ex);
+                throw new HttpClientException($"Missing response from calling: {url}", HttpResponseErrorType.FAILED, ex);
             }
 
             return await HandleResponse<T>(response);
@@ -57,23 +57,27 @@ namespace remote_pokedex.Infrastructure.Services
         private async Task<T> HandleResponse<T>(HttpResponseMessage response) where T : class
         {
             if (response is null || !response.IsSuccessStatusCode)
-            {
-                string content = JsonSerializer.Serialize(response?.Content);
-                throw new HttpClientException($"Response was empty or not successful: {response?.StatusCode}, {content}");
-            }
+                throw new HttpClientException($"Response was empty", HttpResponseErrorType.EMPTY);
+
+            if (!response.IsSuccessStatusCode)
+                throw new HttpClientException($"Response was not successful: {response?.StatusCode}", HttpResponseErrorType.FAILED);
+
+            var stream = await response.Content.ReadAsStreamAsync();
+            
+            if (stream.Length <= 0)
+                throw new HttpClientException($"Response body was empty and not deserializable into {nameof(T)}.", HttpResponseErrorType.EMPTY);
 
             T? resource = null;
             try
             {
-                var stream = await response.Content?.ReadAsStreamAsync() ?? Stream.Null;
                 resource = await JsonSerializer.DeserializeAsync<T>(stream);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is JsonException or ArgumentNullException)
             {
-                throw new HttpClientException($"It was not possible to deserialize response to {nameof(T)}. Response: {response.Content?.ToString() ?? ""}", ex);
+                throw new HttpClientException($"It was not possible to deserialize response to {nameof(T)}. Response: {response.Content?.ToString() ?? ""}", HttpResponseErrorType.FAILED, ex);
             }
 
-            return resource ?? throw new HttpClientException("Response was empty");
+            return resource ?? throw new HttpClientException("Response was empty", HttpResponseErrorType.EMPTY);
         }
 
         public void Dispose() => _httpClient.Dispose();

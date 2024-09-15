@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using remote_pokedex.Infrastructure.Endpoints;
+﻿using remote_pokedex.Infrastructure.Endpoints;
 using remote_pokedex.Infrastructure.Exceptions;
 using remote_pokedex.Pokemons.Endpoints.Responses;
 using remote_pokedex.Pokemons.Services.DTOs;
@@ -15,27 +14,37 @@ public static class GetTranslatedPokemon
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
             app.MapGet("pokemon/translated/{name}", Handler)
+               .WithDescription("Given a Pokemon name, return translated Pokemon description and other basic information")
                .WithTags("Pokemon")
-               .WithDescription("Given a Pokemon name, return translated Pokemon description and other basic information");
+               .AllowAnonymous()
+               .Produces(StatusCodes.Status200OK, typeof(PokemonInfo))
+               .Produces(StatusCodes.Status400BadRequest)
+               .Produces(StatusCodes.Status404NotFound)
+               .Produces(StatusCodes.Status500InternalServerError);
         }
     }
 
-    public static async Task<Results<Ok<PokemonInfo>, BadRequest<string>, NotFound<string>>> Handler(
+    public static async Task<IResult> Handler(
         string name, 
         IPokeAPIRepository pokeAPIRepository, 
         IFunTranslationsService translationsService
     ) {
         if (string.IsNullOrWhiteSpace(name))
-            return TypedResults.BadRequest("The request was not formatted correctly! Pokemon name is missing or empty.");
+            return Results.BadRequest("The request was not formatted correctly! Pokemon name is missing or empty.");
 
         PokemonSpecie specie;
         try
         {
             specie = await pokeAPIRepository.GetPokemonSpecie(name);
         }
-        catch (HttpClientException)
+        catch (HttpClientException ex)
         {
-            return TypedResults.NotFound("The pokemon could not be found, Try again later.");
+            return ex.ErrorType switch
+            {
+                HttpResponseErrorType.FAILED => Results.Problem(statusCode: StatusCodes.Status500InternalServerError, detail: "The request failed for an internal error. Try again later!"),
+                HttpResponseErrorType.EMPTY => Results.NotFound("The pokemon could not be found, Try again later."),
+                _ => throw new NotImplementedException()
+            };
         }
 
         PokemonInfo pokemon = specie.MapPokemon();
