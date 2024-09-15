@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "remote-pokedex", "remote-pokedex.csproj", "{E4A0C881-7186-4576-B486-D9E430403C8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "remote-pokedex", "src\remote-pokedex\remote-pokedex.csproj", "{2FD4E659-08F4-4059-BD6A-36C568D4DB05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "remote-pokedex-test", "..\remote-pokedex-test\remote-pokedex-test.csproj", "{60B233AD-456F-4EC1-BDB6-23644DB0AF46}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "remote-pokedex-test", "test\remote-pokedex-test\remote-pokedex-test.csproj", "{53463A59-1597-42BD-AE58-CCDFBD22BC67}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E4A0C881-7186-4576-B486-D9E430403C8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E4A0C881-7186-4576-B486-D9E430403C8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E4A0C881-7186-4576-B486-D9E430403C8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E4A0C881-7186-4576-B486-D9E430403C8F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{60B233AD-456F-4EC1-BDB6-23644DB0AF46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{60B233AD-456F-4EC1-BDB6-23644DB0AF46}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{60B233AD-456F-4EC1-BDB6-23644DB0AF46}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{60B233AD-456F-4EC1-BDB6-23644DB0AF46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FD4E659-08F4-4059-BD6A-36C568D4DB05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FD4E659-08F4-4059-BD6A-36C568D4DB05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FD4E659-08F4-4059-BD6A-36C568D4DB05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FD4E659-08F4-4059-BD6A-36C568D4DB05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53463A59-1597-42BD-AE58-CCDFBD22BC67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53463A59-1597-42BD-AE58-CCDFBD22BC67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53463A59-1597-42BD-AE58-CCDFBD22BC67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53463A59-1597-42BD-AE58-CCDFBD22BC67}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
