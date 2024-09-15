@@ -20,3 +20,6 @@ app.UseHttpsRedirection();
 app.MapEndpoints();
 
 app.Run();
+
+// Added to reference the program class inside the integration tests
+public partial class Program { }

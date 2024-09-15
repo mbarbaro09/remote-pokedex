@@ -4,6 +4,7 @@ using remote_pokedex.Pokemons.Endpoints.Responses;
 using remote_pokedex.Pokemons.Services.DTOs;
 using remote_pokedex.Pokemons.Services;
 using remote_pokedex.Pokemons.Extensions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace remote_pokedex.Pokemons.Endpoints;
 
@@ -25,7 +26,7 @@ public static class GetTranslatedPokemon
     }
 
     public static async Task<IResult> Handler(
-        string name, 
+        [FromRoute] string name, 
         IPokeAPIRepository pokeAPIRepository, 
         IFunTranslationsService translationsService,
         ILogger<Endpoint> logger

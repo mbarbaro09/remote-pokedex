@@ -26,7 +26,7 @@ public static class GetPokemon
     }
 
     public static async Task<IResult> Handler(
-        string name, 
+        [FromRoute] string name, 
         IPokeAPIRepository pokeAPIRepository, 
         ILogger<Endpoint> logger
     ) {
