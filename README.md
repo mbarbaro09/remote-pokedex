@@ -4,6 +4,7 @@ In order to start the application on your local machine you have to:
 1. Download the correct docker version for your machine from: https://www.docker.com/products/docker-desktop/.
 1. Install docker on your local machine using the installer you have just downloaded.
 1. Clone the repository to a local folder using git using the URL https://github.com/mbarbaro09/remote-pokedex.git.
+1. Start the docker engine (by opening the docker desktop app)
 1. Open a terminal (cmd).
 1. Change directory to ../remote-pokedex/src/remote-pokedex (or ..\remote-pokedex\src\remote-pokedex). Be sure to find the Dockerfile inside the directory
 1. run > docker build -t remote-pokedex-image -f Dockerfile .
